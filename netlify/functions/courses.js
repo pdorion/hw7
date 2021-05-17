@@ -59,6 +59,7 @@ exports.handler = async function(event) {
   let returnValue = {
     courseNumber: courseData.courseNumber,
     name: courseData.name
+    
   }
 
   // set a new Array as part of the return value
@@ -94,11 +95,41 @@ exports.handler = async function(event) {
     returnValue.sections.push(sectionObject)
 
     // 🔥 your code for the reviews/ratings goes here
+
+  //ask firebase for the reviews component of the courses with matching section ID
+    let reviewQuery = await db.collection(`reviews`).where(`sectionId`, `==`, sectionId).get()
+  
+    //get the docs from the reviewQuery  
+    let reviews = reviewQuery.docs
+  
+    //make an array to add review info to after looping through all of them
+  let reviewsArray = []
+
+  //loop through section reviews and add them to the array above while counting reviews
+    for (let reviewsIndex=0; reviewsIndex < reviews.length; reviewsIndex++){
+      reviewsArray.push(reviews[reviewsIndex].data())
+      }
+
+  //Put the reviews in the Section Object that becomes the JSON
+  sectionObject.reviews = reviewsArray
+
+  //make a variable to count the total reviews for the course
+  let totalReviewCount = returnValue.sections[0].reviews.length + returnValue.sections[0].reviews.length
+
+  //add the total count to the JSON return with a new object attribute
+  returnValue.totalReviews = {
+    totalReviewCount
+  }
+
+  //define average rating for the class
+  classAvgRating = 0
+
   }
 
   // return the standard response
   return {
     statusCode: 200,
     body: JSON.stringify(returnValue)
+    
   }
 }
