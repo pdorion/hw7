@@ -109,23 +109,56 @@ exports.handler = async function(event) {
     for (let reviewsIndex=0; reviewsIndex < reviews.length; reviewsIndex++){
       reviewsArray.push(reviews[reviewsIndex].data())
       }
-
+  
   //Put the reviews in the Section Object that becomes the JSON
   sectionObject.reviews = reviewsArray
-
+}
   //make a variable to count the total reviews for the course
   let totalReviewCount = returnValue.sections[0].reviews.length + returnValue.sections[0].reviews.length
-
+  
   //add the total count to the JSON return with a new object attribute
   returnValue.totalReviews = {
     totalReviewCount
   }
-
   //define average rating for the class
-  classAvgRating = 0
+  
+  classAvgRatingArray = [returnValue.sections[0].reviews[0].rating, returnValue.sections[0].reviews[1].rating, returnValue.sections[1].reviews[0].rating, returnValue.sections[1].reviews[1].rating]
 
+  classAvgRatingSum = returnValue.sections[0].reviews[0].rating + returnValue.sections[0].reviews[1].rating + returnValue.sections[1].reviews[0].rating + returnValue.sections[1].reviews[1].rating
+
+  classAvgRating = classAvgRatingSum / classAvgRatingArray.length
+  
+  //add the average class rating to the JSON return with a new object attribute
+  returnValue.classRating = {
+    classAvgRating}
+
+//define average ratings for each section
+  
+brianAvgRatingArray = [returnValue.sections[0].reviews[0].rating, returnValue.sections[0].reviews[1].rating]
+brianAvgRatingSum = returnValue.sections[0].reviews[0].rating + returnValue.sections[0].reviews[1].rating
+
+brianAvgRating = brianAvgRatingSum / brianAvgRatingArray.length
+brianCount = brianAvgRatingArray.length
+
+benAvgRatingArray = [returnValue.sections[1].reviews[0].rating, returnValue.sections[1].reviews[1].rating]
+benAvgRatingSum = returnValue.sections[1].reviews[0].rating + returnValue.sections[1].reviews[1].rating
+
+benAvgRating = benAvgRatingSum / benAvgRatingArray.length
+benCount = benAvgRatingArray.length
+
+//add the average section ratings to the JSON return with a new object attribute
+  returnValue.Section1Rating = {
+    brianAvgRating
   }
-
+  returnValue.Section2Rating = {
+    benAvgRating
+  }
+  returnValue.Section1ReviewsCount = {
+    benCount
+  }
+  returnValue.Section2ReviewsCount = {
+    brianCount
+  }
   // return the standard response
   return {
     statusCode: 200,
